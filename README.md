@@ -12,9 +12,9 @@ Firmware updates may remove the changes so you may have to run the commands agai
 <br>
 <br>
 
-[![https://www.youtube.com/watch?v=qKrKXGRXfWs](https://img.youtube.com/vi/qKrKXGRXfWs/0.jpg)](https://www.youtube.com/watch?v=qKrKXGRXfWs)
+[![https://www.youtube.com/watch?v=V9haiiDYiXg](https://img.youtube.com/vi/V9haiiDYiXg/0.jpg)](https://www.youtube.com/watch?v=V9haiiDYiXg)
 
-https://www.youtube.com/watch?v=qKrKXGRXfWs<br>
+https://www.youtube.com/watch?v=V9haiiDYiXg<br>
 
 
 
