@@ -59,6 +59,8 @@ cp ~/K2-Mainsail-main/mylogo.png /usr/share/frontend/mylogo.png
 cp ~/K2-Mainsail-main/camera.html /usr/share/mainsail/camera.html
 echo -e '\033[33mChange Web UI to Mainsail\033[0m'
 sed -i 's^root /usr/share/fluidd^root /usr/share/mainsail^g' /etc/nginx/nginx.conf
+sed -i 's^/var/log/nginx/fluidd-access.log^/var/log/nginx/mainsail-access.log^g' /etc/nginx/nginx.conf
+sed -i 's^/var/log/nginx/fluidd-error.log^/var/log/nginx/mainsail-error.log^g' /etc/nginx/nginx.conf
 sh -c 'exec /etc/init.d/nginx start'
 sh -c 'exec /etc/init.d/moonraker start'
 echo -e '\033[32mComplete\033[0m'

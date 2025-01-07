@@ -8,7 +8,8 @@ sh -c 'exec /etc/init.d/nginx stop'
 fi
 echo -e '\033[32mRestoring Fluidd\033[0m'
 sed -i 's^root /usr/share/mainsail^root /usr/share/fluidd^g' /etc/nginx/nginx.conf
-
+sed -i 's^/var/log/nginx/mainsail-access.log^/var/log/nginx/fluidd-access.log^g' /etc/nginx/nginx.conf
+sed -i 's^/var/log/nginx/mainsail-error.log^/var/log/nginx/fluidd-error.log^g' /etc/nginx/nginx.conf
 if [ -e '/usr/share/moonraker_backup' ]; then
 while true; do
 read -p "$(printf '\r\n\r\n\033[36mWould you like to retore moonraker to the factory default version?\r\n\r\n\033[36m(Y|N)?: \033[0m')" resp

@@ -10,10 +10,14 @@ case $resp in
 [1]* ) 
 echo -e '\033[32mUsing Fluidd as the Web UI\r\n\033[0m'
 sed -i 's^root /usr/share/mainsail^root /usr/share/fluidd^g' /etc/nginx/nginx.conf
+sed -i 's^/var/log/nginx/mainsail-access.log^/var/log/nginx/fluidd-access.log^g' /etc/nginx/nginx.conf
+sed -i 's^/var/log/nginx/mainsail-error.log^/var/log/nginx/fluidd-error.log^g' /etc/nginx/nginx.conf
 break;;
 [2]* ) 
 echo -e '\033[32mUsing Mainsail as the Web UI\r\n\033[0m'
 sed -i 's^root /usr/share/fluidd^root /usr/share/mainsail^g' /etc/nginx/nginx.conf
+sed -i 's^/var/log/nginx/fluidd-access.log^/var/log/nginx/mainsail-access.log^g' /etc/nginx/nginx.conf
+sed -i 's^/var/log/nginx/fluidd-error.log^/var/log/nginx/mainsail-error.log^g' /etc/nginx/nginx.conf
 if [ ! -e '/usr/share/moonraker/utils' ]; then
 while true; do
 read -p "$(printf '\r\n\r\n\033[33mThe default Moonraker is being used, the camera will not be available with this version\r\nWould you like to use the version that enables the camera?\r\n\r\n\033[36m(Y|N)?: \033[0m')" res
