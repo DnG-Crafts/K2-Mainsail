@@ -1,0 +1,69 @@
+ <!DOCTYPE html> 
+ <html> 
+   <head> 
+   <title></title> 
+   <style>
+     body {
+         background-color: #1e1e20;
+		 margin: 0; 
+		 height:100%; 
+		 width:100%; 
+		 overflow: hidden;
+      }
+     video {
+         position: absolute;
+         z-index: -1;
+         top: 0;
+         left: 0;
+         width: 100%; 
+         height: 100%;
+         object-fit: fill;
+     }
+   </style>
+   </head> 
+   <body> 
+     <video id='remoteVideos'></video> 
+     <script> 
+       if (window.navigator.maxTouchPoints > 1) {
+	   	   var pc = new RTCPeerConnection({ 
+	   	   	   	iceServers: [] 
+	   	   }); 
+       }
+	   else
+	   {
+	   	   var pc = new RTCPeerConnection({ 
+	   	   	   	iceServers: [{urls: 'stun:stun.l.google.com:19302'}] 
+	   	   }); 
+	   };
+       var log = msg => { console.log(msg); }; 
+       function sendOfferToCall(sdp) { 
+         var xhttp = new XMLHttpRequest(); 
+         xhttp.onreadystatechange = function() { 
+           if (this.readyState == 4 && this.status == 200) { 
+             let res = JSON.parse(atob(this.responseText)); 
+             console.log(res); 
+             if(res.type == 'answer') { 
+               pc.setRemoteDescription(new RTCSessionDescription(res)); 
+             } 
+           } 
+         }; 
+         xhttp.open('POST', 'http://' + window.location.host.split(':')[0] + ':8000/call/webrtc_local'); 
+         xhttp.setRequestHeader('Content-Type', 'plain/text'); 
+         xhttp.send(btoa(JSON.stringify({'type': 'offer', 'sdp': sdp}))); 
+       } 
+       pc.ontrack = function (event) { 
+         var el = document.getElementById('remoteVideos'); 
+         el.srcObject = event.streams[0]; 
+         el.autoplay = true; 
+         el.controls = false; 
+         el.muted = true; 
+       }; 
+       pc.oniceconnectionstatechange = e => log(pc.iceConnectionState); 
+       pc.onicecandidate = event => { 
+         if(event.candidate === null) sendOfferToCall(pc.localDescription.sdp) 
+       }; 
+       pc.addTransceiver('video', {'direction': 'sendrecv'}) 
+       pc.createOffer().then(d => pc.setLocalDescription(d)).catch(log); 
+     </script> 
+   </body> 
+ </html>
