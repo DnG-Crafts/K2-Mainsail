@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  <style>
+    body {
+      background-color: #1e1e20;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    canvas {
+      position: absolute;
+      z-index: -1;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: fill;
+    }
+  </style>
+</head>
+<body>
+  <canvas id='canvas'></canvas>
+  <script>
+    if (navigator.userAgent.toLowerCase().indexOf("android") > -1) {
+      var pc = new RTCPeerConnection();
+    }
+    else {
+      var pc = new RTCPeerConnection({
+        iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
+      });
+    };
+    var log = msg => { console.log(msg); };
+    function sendOfferToCall(sdp) {
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+          let res = JSON.parse(atob(this.responseText));
+          console.log(res);
+          if (res.type == 'answer') {
+            pc.setRemoteDescription(new RTCSessionDescription(res));
+          }
+        }
+      };
+      xhttp.open('POST', 'http://' + window.location.host.split(':')[0] + ':8000/call/webrtc_local');
+      xhttp.setRequestHeader('Content-Type', 'plain/text');
+      xhttp.send(btoa(JSON.stringify({ 'type': 'offer', 'sdp': sdp })));
+    }
+    pc.ontrack = function (event) {
+      if (window.MediaStreamTrackProcessor) {
+        var processor = new MediaStreamTrackProcessor(event);
+        var reader = processor.readable.getReader();
+        readChunk();
+        function readChunk() {
+          reader.read().then(async ({ done, value }) => {
+            if (value) {
+              var bitmap = await createImageBitmap(value);
+              var canvas = document.querySelector("canvas");
+              var context = canvas.getContext("2d");
+              canvas.width = bitmap.width;
+              canvas.height = bitmap.height;
+              context.drawImage(bitmap, 0, 0);
+              value.close();
+              pc.close();
+            }
+          });
+        }
+      }
+    };
+    pc.oniceconnectionstatechange = e => log(pc.iceConnectionState);
+    pc.onicecandidate = event => {
+      if (event.candidate === null) sendOfferToCall(pc.localDescription.sdp)
+    };
+    pc.addTransceiver('video', { 'direction': 'sendrecv' })
+    pc.createOffer().then(d => pc.setLocalDescription(d)).catch(log); 
+  </script>
+</body>
+</html>
