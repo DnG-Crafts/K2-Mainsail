@@ -53,10 +53,12 @@ cp -r ~/K2-Mainsail-main/mainsail /usr/share/mainsail
 fi
 echo "Install camera support..."
 cp ~/K2-Mainsail-main/camera.html /usr/share/frontend/camera.html
+cp ~/K2-Mainsail-main/snapshot.html /usr/share/frontend/snapshot.html
 cp ~/K2-Mainsail-main/index.html /usr/share/frontend/index.html
 cp ~/K2-Mainsail-main/favicon.ico /usr/share/frontend/favicon.ico
 cp ~/K2-Mainsail-main/mylogo.png /usr/share/frontend/mylogo.png
 cp ~/K2-Mainsail-main/camera.html /usr/share/mainsail/camera.html
+cp ~/K2-Mainsail-main/snapshot.html /usr/share/mainsail/snapshot.html
 echo -e '\033[33mChange Web UI to Mainsail\033[0m'
 sed -i 's^root /usr/share/fluidd^root /usr/share/mainsail^g' /etc/nginx/nginx.conf
 sed -i 's^/var/log/nginx/fluidd-access.log^/var/log/nginx/mainsail-access.log^g' /etc/nginx/nginx.conf
